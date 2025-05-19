@@ -6,16 +6,6 @@ from pydantic import BaseModel, Field, constr
 app = FastAPI()
 
 
-@app.get("/task")
-async def get_all_task():
-    return "staus: OK"
-
-@app.get("/task/{task_id}")
-async def get_task_by_id(task_id:int):
-    return task_id
-
-
-
 class SchemaTaskAdd(BaseModel):
     name: str = Field(..., description="Название задачи", examples=["Баг отображения"])
     description: str | None = Field(None, description="Описание задачи")
@@ -25,17 +15,25 @@ class SchemaTaskAdd(BaseModel):
     priority: int = Field(..., description="Приоритет задачи",examples=[1])
     due_date: datetime | None = Field(None, description="Дата и время завершения задачи")
 
+class SchemaTask(SchemaTaskAdd):
+    id: int = Field(..., description="Уникальный идентификатор задачи")
+    created_at: datetime = Field(..., description="Дата и время создания задачи")
+    updated_at: datetime = Field(..., description="Дата и время последнего обновления задачи")
+    status: int = Field(..., description="Текущий статус задачи", examples=[1])
+    local_task_id: int = Field(..., description="Номер задачи в проекте", examples=[1])
 
-@app.post("task")
-async def create_task(new_task: SchemaTaskAdd):
+
+
+@app.get("/task")
+async def get_all_task() -> list[SchemaTask]:
     return "staus: OK"
 
-@app.get("/project")
-async def get_all_project():
-    return "staus: OK"
+@app.get("/task/{task_id}")
+async def get_task_by_id(task_id:int) -> SchemaTask:
+    return task_id
 
-@app.get("/project/{project_id}")
-async def get_project_by_id(project_id:int):
+@app.post("/task")
+async def add_task(new_task: SchemaTaskAdd):
     return "staus: OK"
 
 
@@ -47,7 +45,43 @@ class SchemaProjectAdd(BaseModel):
     creator_id: int = Field(..., description="ID пользователя, создавшего проект", examples=[1])
 
 
+class SchemaProject(SchemaProjectAdd):
+    id: int = Field(..., description="Уникальный ID проекта", examples=[101])
+    created_at: datetime = Field(..., description="Дата создания", examples=["2025-05-08T17:19:33.900197"])
+    updated_at: datetime = Field(..., description="Дата последнего обновления", examples=["2025-05-08T17:19:33.900200"])
+    is_active: bool = Field(..., description="Флаг активности проекта", examples=[True])
 
-@app.post("project")
-async def create_project(new_project: SchemaProjectAdd):
+
+@app.get("/project")
+async def get_all_project() -> list[SchemaProject]:
+    return "staus: OK"
+
+@app.get("/project/{project_id}")
+async def get_project_by_id(project_id:int) -> SchemaProject:
+    return "staus: OK"
+
+
+@app.post("/project")
+async def add_project(new_project: SchemaProjectAdd):
+    return "staus: OK"
+
+class SchemaCommentAdd(BaseModel):
+    project_id: int
+    task_id: int
+    description: str
+    autor_id: int
+
+
+class SchemaComment(SchemaCommentAdd):
+    id: int
+    created_at: datetime = Field(..., description="Дата создания", examples=["2025-05-08T17:19:33.900197"])
+    updated_at: datetime = Field(..., description="Дата последнего обновления", examples=["2025-05-08T17:19:33.900200"])
+
+
+@app.get("/comment")
+async def get_all_comment() -> list[SchemaComment]:
+    return "staus: OK"
+
+@app.post("/comment")
+async def add_comment(new_comment: SchemaCommentAdd):
     return "staus: OK"
