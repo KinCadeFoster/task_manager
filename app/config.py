@@ -14,5 +14,3 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict()
 
 settings = Settings()
-
-print(settings.DB_NAME)
