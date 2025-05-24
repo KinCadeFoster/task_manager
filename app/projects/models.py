@@ -6,7 +6,7 @@ from app.database import Base
 class ProjectTableModel(Base):
     __tablename__ = "projects"
 
-    id: Mapped[int] = mapped_column(primary_key=True, comment="Уникальный идентификатор проекта")
+    id: Mapped[int] = mapped_column(primary_key=True, index=True, comment="Уникальный идентификатор проекта")
     name: Mapped[str] = mapped_column(nullable=False, comment="Название проекта")
     prefix_name: Mapped[str] = mapped_column(String(5),nullable=False, unique=True, comment="Префикс проекта")
     description: Mapped[str] = mapped_column(nullable=False, comment="Описание проекта")
