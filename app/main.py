@@ -17,7 +17,6 @@ app.include_router(router_projects)
 
 
 
-
 class SchemaCommentAdd(BaseModel):
     project_id: int
     task_id: int
