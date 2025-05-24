@@ -11,7 +11,7 @@ class TaskTableModel(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True, comment="Уникальный идентификатор задачи")
     name: Mapped[str] = mapped_column(String(100), nullable=False, comment="Название задачи")
-    description: Mapped[Optional[str]] = mapped_column(String(10000), nullable=True)
+    description: Mapped[str | None] = mapped_column(String(10000), nullable=True)
     project_id: Mapped[int] = mapped_column(nullable=False)
     creator_id: Mapped[int] = mapped_column(nullable=False)
     assignee_id: Mapped[int] = mapped_column(nullable=False)
