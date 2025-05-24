@@ -6,7 +6,7 @@ from app.users.service import UsersService
 
 router = APIRouter(
     prefix="/auth",
-    tags=["auth"]
+    tags=["Auth"]
 )
 
 @router.post("/register")

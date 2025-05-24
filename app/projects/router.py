@@ -22,13 +22,9 @@ async def get_project_by_id(project_id:int) -> SchemaProject | None:
 
 @router.post("")
 async def add_project(new_project: SchemaProjectAdd):
-    async with async_session_maker() as session:
-        project = ProjectTableModel(
-            name=new_project.name,
-            description=new_project.description,
-            creator_id=new_project.creator_id,
-            prefix_name=new_project.prefix_name
-        )
-        session.add(project)
-        await session.commit()
-        return "staus: OK"
+    await ProjectService.add(
+        name=new_project.name,
+        prefix_name=new_project.prefix_name,
+        description=new_project.description,
+        creator_id=new_project.creator_id
+    )
