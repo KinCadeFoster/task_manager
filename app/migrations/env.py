@@ -12,6 +12,7 @@ from app.database import Base, DATABASE_URL
 from app.tasks.models import TaskTableModel
 from app.projects.models import ProjectTableModel
 from app.comments.models import CommentTableModel
+from app.users.models import UsersTableModel
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
