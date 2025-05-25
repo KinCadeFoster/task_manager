@@ -1,10 +1,12 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
 from app.database import async_session_maker
 from app.projects.models import ProjectTableModel
 from app.projects.schemas import SchemaProject, SchemaProjectAdd
 
 from app.projects.service import ProjectService
+from app.users.dependencies import get_current_user
+from app.users.models import UsersTableModel
 
 router = APIRouter(
     prefix="/project",
@@ -12,8 +14,8 @@ router = APIRouter(
 )
 
 @router.get("")
-async def get_all_project() -> list[SchemaProject]:
-    return await ProjectService.find_all()
+async def get_all_project(user: UsersTableModel = Depends(get_current_user)): #-> list[SchemaProject]:
+    return await ProjectService.find_all(creator_id=user.id)
 
 @router.get("/{project_id}")
 async def get_project_by_id(project_id:int) -> SchemaProject | None:

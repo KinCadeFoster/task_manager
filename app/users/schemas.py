@@ -21,3 +21,10 @@ class SchemaUser(BaseModel):
     created_at: datetime = Field(..., description="Дата и время создания пользователя")
     updated_at: datetime = Field(..., description="Дата и время последнего обновления данных пользователя")
     is_active: bool = Field(..., description="Удален ли пользователь")
+
+    class Config:
+        from_attributes = True
+
+class SchemaUserAuth(BaseModel):
+    username: str = Field(..., description="Аккаунт пользователя")
+    password: str = Field(..., description="Пароль пользователя")
