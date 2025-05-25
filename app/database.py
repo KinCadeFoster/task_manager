@@ -1,3 +1,4 @@
+from sqlalchemy import inspect
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase
 
@@ -11,3 +12,10 @@ async_session_maker = async_sessionmaker(bind=engine, class_=AsyncSession, expir
 
 class Base(DeclarativeBase):
     pass
+
+async def check_db_exists() -> bool:
+    async with engine.connect() as conn:
+        tables = await conn.run_sync(
+            lambda sync_conn: inspect(sync_conn).get_table_names()
+        )
+        return bool(tables)

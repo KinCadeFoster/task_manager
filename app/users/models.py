@@ -15,6 +15,10 @@ class UsersTableModel(Base):
     username: Mapped[str] = mapped_column(String(256), nullable=False)
     is_active: Mapped[bool] = mapped_column(default=True)
     hash_password: Mapped[str] = mapped_column(String(256), nullable=False)
+    is_admin: Mapped[bool] = mapped_column(default=False)
+    is_manager: Mapped[bool] = mapped_column(default=False)
+    is_user: Mapped[bool] = mapped_column(default=False)
+
 
     created_at: Mapped[DateTime] = mapped_column(
         DateTime(timezone=True),

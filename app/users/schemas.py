@@ -10,6 +10,9 @@ class SchemaUserRegister(BaseModel):
     surname: str = Field(..., description="Фамилия пользователя")
     patronymic: str = Field(..., description="Отчество пользователя")
     username: str = Field(..., description="Аккаунт пользователя")
+    is_admin: bool = Field(description="Права админа")
+    is_manager: bool = Field(description="Права менеджера")
+    is_user: bool = Field(description="Пользователя")
 
 class SchemaUser(BaseModel):
     id: int = Field(..., description="Идентификатор пользователя")
