@@ -15,3 +15,7 @@ class SchemaComment(SchemaCommentAdd):
 
     class Config:
         from_attributes = True
+
+class SchemaCommentUpdate(BaseModel):
+    id: int = Field(..., description="Идентификатор комментария")
+    comment_text: str = Field(..., description="Комментарий пользователя")

@@ -1,6 +1,6 @@
-from app.database import async_session_maker
+from sqlalchemy import select, insert, update, delete
 
-from sqlalchemy import select, insert
+from app.database import async_session_maker
 
 
 class BaseService:
@@ -30,6 +30,30 @@ class BaseService:
     @classmethod
     async def add(cls, **data):
         async with async_session_maker() as session:
-            query = insert(cls.model).values(**data)
+            query = insert(cls.model).values(**data).returning(cls.model)
+            result = await session.execute(query)
+            await session.commit()
+            return result.scalar_one()
+
+    @classmethod
+    async def update_by_id(cls, object_id: int, **data):
+        async with async_session_maker() as session:
+            query = (
+                update(cls.model)
+                .where(cls.model.id == object_id)
+                .values(**data)
+                .execution_options(synchronize_session="fetch")
+            )
+            await session.execute(query)
+            await session.commit()
+            result = await session.execute(
+                select(cls.model).where(cls.model.id == object_id)
+            )
+            return result.scalar_one_or_none()
+
+    @classmethod
+    async def delete_by_id(cls, object_id: int):
+        async with async_session_maker() as session:
+            query = delete(cls.model).where(cls.model.id == object_id)
             await session.execute(query)
             await session.commit()
