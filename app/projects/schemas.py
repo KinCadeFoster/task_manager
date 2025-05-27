@@ -19,3 +19,9 @@ class SchemaProject(SchemaProjectAdd):
 
     class Config:
         from_attributes = True
+
+
+class SchemaProjectUpdate(BaseModel):
+    id: int = Field(..., description="Уникальный ID проекта", examples=[101])
+    name: str = Field(..., description="Название проекта", examples=["My Project"])
+    description: str = Field(..., description="Описание проекта", examples=["Проект для автоматизации задач"])

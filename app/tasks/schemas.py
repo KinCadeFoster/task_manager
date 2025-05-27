@@ -21,3 +21,12 @@ class SchemaTask(SchemaTaskAdd):
 
     class Config:
         from_attributes = True
+
+class SchemaTaskUpdate(BaseModel):
+    id: int = Field(..., description="Уникальный идентификатор задачи")
+    name: str = Field(..., description="Название задачи", examples=["Баг отображения"])
+    description: str | None = Field(None, description="Описание задачи")
+    project_id: int = Field(..., description="Идентификатор проекта, к которому относится задача")
+    assignee_id: int = Field(..., description="Идентификатор пользователя, назначенного на задачу")
+    priority: int = Field(..., description="Приоритет задачи",examples=[1])
+    due_date: datetime | None = Field(None, description="Дата и время завершения задачи")
