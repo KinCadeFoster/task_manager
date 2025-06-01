@@ -1,8 +1,4 @@
-from fastapi import APIRouter, Depends
-from watchfiles import awatch
-
-from app.database import async_session_maker
-from app.projects.models import ProjectTableModel
+from fastapi import APIRouter, Depends, HTTPException, status
 from app.projects.schemas import SchemaProject, SchemaProjectAdd, SchemaProjectUpdate
 
 from app.projects.service import ProjectService
@@ -14,28 +10,32 @@ router = APIRouter(
     tags=["Projects"]
 )
 
-@router.get("")
+@router.get("/")
 async def get_all_project(user: UsersTableModel = Depends(get_current_user))-> list[SchemaProject]:
     return await ProjectService.find_all()
 
 @router.get("/{project_id}")
-async def get_project_by_id(project_id:int) -> SchemaProject | None:
-    return await ProjectService.find_by_id(project_id)
+async def get_project_by_id(project_id:int) -> SchemaProject:
+    project = await ProjectService.find_by_id(project_id)
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+    return project
 
 
-@router.post("")
+@router.post("/", status_code=status.HTTP_201_CREATED)
 async def add_project(new_project: SchemaProjectAdd) -> SchemaProject:
-    return await ProjectService.add(
-        name=new_project.name,
-        prefix_name=new_project.prefix_name,
-        description=new_project.description,
-        creator_id=new_project.creator_id
-    )
+    return await ProjectService.add(**new_project.model_dump())
 
-@router.patch("")
-async def update_project(data: SchemaProjectUpdate) -> SchemaProject:
-    return await ProjectService.update_by_id(data.id, name=data.name, description=data.description)
+@router.patch("/{project_id}")
+async def update_project(project_id: int, data: SchemaProjectUpdate) -> SchemaProject:
+    project = await ProjectService.update_by_id(project_id, **data.model_dump())
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+    return project
 
-@router.delete("")
-async def delete_project(id_project: int):
-    return await ProjectService.delete_by_id(id_project)
+@router.delete("/{project_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_project(project_id: int):
+    result = await ProjectService.delete_by_id(project_id)
+    if not result:
+        raise HTTPException(status_code=404, detail="Project not found")
+    return None

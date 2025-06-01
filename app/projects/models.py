@@ -1,4 +1,4 @@
-from sqlalchemy import String, DateTime, func, Boolean
+from sqlalchemy import String, DateTime, func, Boolean, Integer
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database import Base
@@ -6,11 +6,11 @@ from app.database import Base
 class ProjectTableModel(Base):
     __tablename__ = "projects"
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True, comment="Уникальный идентификатор проекта")
-    name: Mapped[str] = mapped_column(nullable=False, comment="Название проекта")
-    prefix_name: Mapped[str] = mapped_column(String(5),nullable=False, unique=True, comment="Префикс проекта")
-    description: Mapped[str] = mapped_column(nullable=False, comment="Описание проекта")
-    creator_id: Mapped[int] = mapped_column(nullable=False, comment="ID создателя проекта")
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, comment="Уникальный идентификатор проекта")
+    name: Mapped[str] = mapped_column(String(255), nullable=False, comment="Название проекта")
+    prefix_name: Mapped[str] = mapped_column(String(5), nullable=False, unique=True, comment="Префикс проекта")
+    description: Mapped[str] = mapped_column(String(1000), nullable=False, comment="Описание проекта")
+    creator_id: Mapped[int] = mapped_column(Integer, nullable=False, comment="ID создателя проекта")
     created_at: Mapped[DateTime] = mapped_column(
         DateTime(timezone=True),
         default=func.now(),
