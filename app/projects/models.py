@@ -1,5 +1,5 @@
 from sqlalchemy import String, DateTime, func, Boolean, Integer
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
 
@@ -25,3 +25,5 @@ class ProjectTableModel(Base):
         comment="Дата и время последнего обновления проекта"
     )
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, comment="Статус активности проекта")
+
+    tasks = relationship("TaskTableModel", back_populates="project", cascade="all, delete-orphan")

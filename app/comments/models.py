@@ -1,7 +1,7 @@
 from typing import Optional
 from datetime import datetime
 
-from sqlalchemy import String, DateTime, Boolean, Integer, func
+from sqlalchemy import String, DateTime, Boolean, Integer, func, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database import Base
@@ -19,7 +19,7 @@ class CommentTableModel(Base):
         String(10000), nullable=False, comment="Текст комментария"
 )
     task_id: Mapped[int] = mapped_column(
-        Integer, nullable=False, index=True, comment="ID задачи, к которой относится комментарий"
+        Integer, ForeignKey("tasks.id", ondelete="CASCADE"), nullable=False, index=True, comment="ID задачи, к которой относится комментарий"
     )
     is_deleted: Mapped[bool] = mapped_column(
         Boolean, default=False, comment="Флаг удаления"

@@ -1,7 +1,7 @@
 from typing import Optional
 
-from sqlalchemy import String, DateTime, func, Integer
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import String, DateTime, func, Integer, ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
 
@@ -12,7 +12,8 @@ class TaskTableModel(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, comment="Уникальный идентификатор задачи")
     name: Mapped[str] = mapped_column(String(100), nullable=False, comment="Название задачи")
     description: Mapped[str | None] = mapped_column(String(10000), nullable=True)
-    project_id: Mapped[int] = mapped_column(Integer, nullable=False)
+    project_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("projects.id", ondelete="CASCADE"), nullable=False, comment="ID проекта")
     creator_id: Mapped[int] = mapped_column(Integer, nullable=False)
     assignee_id: Mapped[int] = mapped_column(Integer, nullable=False)
     priority: Mapped[int] = mapped_column(Integer, nullable=False, comment="Приоритет задачи")
@@ -40,3 +41,5 @@ class TaskTableModel(Base):
     )
 
     local_task_id: Mapped[int] = mapped_column(Integer, nullable=False, comment="Номер задачи в проекте")
+
+    project = relationship("ProjectTableModel", back_populates="tasks")

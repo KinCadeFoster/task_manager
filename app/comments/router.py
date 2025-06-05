@@ -1,6 +1,7 @@
 from fastapi import APIRouter, status, HTTPException
 from app.comments.schemas import SchemaComment, SchemaCommentAdd, SchemaCommentUpdate
 from app.comments.service import CommentService
+from app.tasks.service import TaskService
 
 router = APIRouter(prefix="/comments",tags=["Comments"])
 
@@ -10,6 +11,9 @@ async def get_all_comment() -> list[SchemaComment]:
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def add_comment(new_comment: SchemaCommentAdd) -> SchemaComment:
+    task = await TaskService.find_by_id(new_comment.task_id)
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
     return await CommentService.add(**new_comment.model_dump()
     )
 
@@ -26,3 +30,10 @@ async def delete_comment(comment_id: int):
     if not result:
         raise HTTPException(status_code=404, detail="Comment not found")
     return None
+
+@router.get("/by-task/{task_id}")
+async def get_comments_by_task(task_id: int) -> list[SchemaComment]:
+    task = await TaskService.find_by_id(task_id)
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+    return await CommentService.find_all(task_id=task_id)

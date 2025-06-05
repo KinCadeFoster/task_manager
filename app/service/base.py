@@ -1,8 +1,9 @@
-from typing import Any, Optional, TypeVar, Type
+from typing import Any, Optional, Type
+
+from fastapi import HTTPException
 from sqlalchemy import select, insert, update
 from app.database import async_session_maker
 
-T = TypeVar("T")
 
 class BaseService:
     model: Type[Any] = None
@@ -69,4 +70,4 @@ class BaseService:
                 return None
             await session.delete(obj)
             await session.commit()
-            return obj
+            return None
