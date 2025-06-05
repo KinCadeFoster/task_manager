@@ -1,7 +1,7 @@
 from sqlalchemy import String, DateTime, func, Boolean, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-
 from app.database import Base
+from app.projects.association_tables import project_users
 
 class ProjectTableModel(Base):
     __tablename__ = "projects"
@@ -26,4 +26,5 @@ class ProjectTableModel(Base):
     )
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, comment="Статус активности проекта")
 
+    users = relationship("UsersTableModel", secondary=project_users, back_populates="projects")
     tasks = relationship("TaskTableModel", back_populates="project", cascade="all, delete-orphan")
