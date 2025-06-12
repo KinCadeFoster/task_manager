@@ -1,14 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import selectinload
 
+from app.exceptions import UserPermissionError
 from app.projects.models import ProjectTableModel
-from app.projects.schemas import SchemaProject, SchemaProjectAdd, SchemaProjectUpdate
+from app.projects.schemas import SchemaProject, SchemaProjectAdd, SchemaProjectUpdate, SchemaProjectAddWithUser
 
 from app.projects.service import ProjectService
 from app.users.dependencies import get_current_user
 from app.users.models import UsersTableModel
 from app.users.schemas import SchemaUser
-from app.users.service import UsersService
 
 router = APIRouter(
     prefix="/project",
@@ -26,10 +26,18 @@ async def get_project_by_id(project_id:int) -> SchemaProject:
         raise HTTPException(status_code=404, detail="Project not found")
     return project
 
-
 @router.post("/", status_code=status.HTTP_201_CREATED)
-async def add_project(new_project: SchemaProjectAdd) -> SchemaProject:
-    return await ProjectService.add(**new_project.model_dump())
+async def add_project(
+        new_project: SchemaProjectAdd,
+        current_user: SchemaUser = Depends(get_current_user)
+) -> SchemaProject:
+    if current_user.is_manager:
+        project_with_user = SchemaProjectAddWithUser(
+            **new_project.model_dump(),
+            creator_id=current_user.id
+        )
+        return await ProjectService.add(**project_with_user.model_dump())
+    raise UserPermissionError
 
 @router.patch("/{project_id}")
 async def update_project(project_id: int, data: SchemaProjectUpdate) -> SchemaProject:
