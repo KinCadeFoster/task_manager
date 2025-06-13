@@ -3,7 +3,7 @@ from typing import Optional, Any
 from app.projects.models import ProjectTableModel
 from app.users.models import UsersTableModel
 from app.database import async_session_maker
-from fastapi import HTTPException, status
+from fastapi import HTTPException
 
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
