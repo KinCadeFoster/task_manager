@@ -64,3 +64,18 @@ class ProjectService(BaseService):
                     query = query.options(opt)
             result = await session.execute(query)
             return result.scalar_one_or_none()
+
+    @classmethod
+    async def user_in_project(cls, project_id: int, user_id: int) -> bool:
+        if cls.model is None:
+            raise NotImplementedError("Model must be set for BaseService subclass")
+        async with async_session_maker() as session:
+            result = await session.execute(
+                select(ProjectTableModel)
+                .options(selectinload(ProjectTableModel.users))
+                .where(ProjectTableModel.id == project_id)
+            )
+            project = result.scalar_one_or_none()
+            if not project:
+                return False
+            return any(user.id == user_id for user in project.users)
