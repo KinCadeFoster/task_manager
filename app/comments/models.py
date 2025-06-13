@@ -1,9 +1,6 @@
-from typing import Optional
 from datetime import datetime
-
 from sqlalchemy import String, DateTime, Boolean, Integer, func, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
-
 from app.database import Base
 
 class CommentTableModel(Base):

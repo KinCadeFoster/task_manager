@@ -1,9 +1,12 @@
 from datetime import datetime, UTC
-from fastapi import Request, Depends
+from fastapi import Request, Depends, HTTPException
 from jose import jwt, JWTError
 from app.config import settings
 from app.exceptions import UserPermissionError, UserIsNotPresentException, TokenExpiredException, \
     IncorrectTokenFormatException, TokenAbsentException
+from app.projects.service import ProjectService
+from app.tasks.service import TaskService
+from app.users.models import UsersTableModel
 from app.users.schemas import SchemaUser
 from app.users.service import UsersService
 

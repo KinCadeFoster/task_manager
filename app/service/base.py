@@ -63,13 +63,13 @@ class BaseService:
             return await cls.find_by_id(object_id)
 
     @classmethod
-    async def delete_by_id(cls, object_id: int) -> Optional[Any]:
+    async def delete_by_id(cls, object_id: int) -> bool:
         if cls.model is None:
             raise NotImplementedError("Model must be set for BaseService subclass")
         async with async_session_maker() as session:
             obj = await session.get(cls.model, object_id)
             if obj is None:
-                return None
+                return False
             await session.delete(obj)
             await session.commit()
-            return None
+            return True

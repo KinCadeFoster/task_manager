@@ -19,4 +19,4 @@ class SchemaComment(SchemaCommentAdd):
 
 class SchemaCommentUpdate(BaseModel):
     """Схема для обновления текста комментария"""
-    comment_text: str = Field(..., description="Комментарий пользователя")
+    comment_text: str | None = Field(None, description="Комментарий пользователя")
