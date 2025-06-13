@@ -3,7 +3,7 @@ from sqlalchemy.orm import selectinload
 
 from app.exceptions import UserPermissionError
 from app.projects.models import ProjectTableModel
-from app.projects.schemas import SchemaProject, SchemaProjectAdd, SchemaProjectUpdate, SchemaProjectAddWithUser
+from app.projects.schemas import SchemaProject, SchemaProjectAdd, SchemaProjectUpdate
 
 from app.projects.service import ProjectService
 from app.users.dependencies import get_current_user
@@ -31,13 +31,11 @@ async def add_project(
         new_project: SchemaProjectAdd,
         current_user: SchemaUser = Depends(get_current_user)
 ) -> SchemaProject:
-    if current_user.is_manager:
-        project_with_user = SchemaProjectAddWithUser(
-            **new_project.model_dump(),
-            creator_id=current_user.id
-        )
-        return await ProjectService.add(**project_with_user.model_dump())
-    raise UserPermissionError
+    if not current_user.is_manager:
+        raise UserPermissionError
+    project_data = new_project.model_dump()
+    project_data['creator_id'] = current_user.id
+    return await ProjectService.add(**project_data)
 
 @router.patch("/{project_id}")
 async def update_project(project_id: int, data: SchemaProjectUpdate) -> SchemaProject:

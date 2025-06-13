@@ -7,9 +7,6 @@ class SchemaProjectAdd(BaseModel):
                         description="Префикс проекта (уникальный короткий код)", examples=["MPP"])
     description: str = Field(..., description="Описание проекта", examples=["Проект для автоматизации задач"])
 
-class SchemaProjectAddWithUser(SchemaProjectAdd):
-    creator_id: int = Field(..., description="ID пользователя, создавшего проект", examples=[1])
-
 class SchemaProject(SchemaProjectAdd):
     id: int = Field(..., description="Уникальный ID проекта", examples=[101])
     creator_id: int = Field(..., description="ID пользователя, создавшего проект", examples=[1])
