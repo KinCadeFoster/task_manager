@@ -52,7 +52,7 @@ async def delete_comment(
         raise HTTPException(status_code=404, detail="Comment not found")
     return None
 
-@router.get("/by-task/{task_id}", response_model=list[SchemaComment])
+@router.get("/comments-by-task/{task_id}", response_model=list[SchemaComment])
 async def get_comments_by_task(
     task_id: int,
     current_user: UsersTableModel = Depends(get_current_user)
