@@ -53,7 +53,7 @@ async def delete_project(project_id: int):
 
 @router.get("/{project_id}/users")
 async def get_project_users(project_id: int) -> list[SchemaUser]:
-    project = await ProjectService.find_by_id_with_users(project_id, options=[selectinload(ProjectTableModel.users)])
+    project = await ProjectService.find_users_in_project(project_id, options=[selectinload(ProjectTableModel.users)])
     return [SchemaUser.model_validate(user) for user in project.users]
 
 @router.post("/{project_id}/users/{user_id}", status_code=status.HTTP_200_OK)
