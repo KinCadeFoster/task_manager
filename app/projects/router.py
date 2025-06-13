@@ -16,8 +16,13 @@ router = APIRouter(
 )
 
 @router.get("/")
-async def get_all_project(user: UsersTableModel = Depends(get_current_user))-> list[SchemaProject]:
-    return await ProjectService.find_all()
+async def get_all_project(
+        current_user: UsersTableModel = Depends(get_current_user)
+)-> list[SchemaProject]:
+    if current_user.is_admin:
+        return await ProjectService.find_all()
+    else:
+        return await ProjectService.find_by_user_id(current_user.id)
 
 @router.get("/{project_id}")
 async def get_project_by_id(project_id:int) -> SchemaProject:
@@ -29,7 +34,7 @@ async def get_project_by_id(project_id:int) -> SchemaProject:
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def add_project(
         new_project: SchemaProjectAdd,
-        current_user: SchemaUser = Depends(get_current_user)
+        current_user: UsersTableModel = Depends(get_current_user)
 ) -> SchemaProject:
     if not current_user.is_manager:
         raise UserPermissionError

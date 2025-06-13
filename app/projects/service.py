@@ -1,12 +1,14 @@
 from typing import Optional, Any
 
 from app.projects.models import ProjectTableModel
+from app.projects.schemas import SchemaProject
 from app.users.models import UsersTableModel
 from app.database import async_session_maker
 from fastapi import HTTPException
 
+from sqlalchemy import or_
 from sqlalchemy.future import select
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import selectinload, joinedload
 
 from app.service.base import BaseService
 
@@ -79,3 +81,22 @@ class ProjectService(BaseService):
             if not project:
                 return False
             return any(user.id == user_id for user in project.users)
+
+    @classmethod
+    async def find_by_user_id(cls, user_id: int) -> list[SchemaProject]:
+        if cls.model is None:
+            raise NotImplementedError("Model must be set for BaseService subclass")
+        async with async_session_maker() as session:
+            query = (
+                select(ProjectTableModel)
+                .where(
+                    or_(ProjectTableModel.creator_id == user_id,
+                        ProjectTableModel.users.any(id=user_id))
+                )
+                .options(joinedload(ProjectTableModel.users))
+                .order_by(ProjectTableModel.created_at.desc())
+            )
+            result = await session.execute(query)
+            projects = result.unique().scalars().all()
+
+            return [SchemaProject.model_validate(project) for project in projects]
