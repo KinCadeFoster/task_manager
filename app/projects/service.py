@@ -54,7 +54,7 @@ class ProjectService(BaseService):
             await session.commit()
 
     @classmethod
-    async def find_by_id_with_users(cls, model_id: int, options=None) -> Optional[Any]:
+    async def find_users_in_project(cls, model_id: int, options=None) -> Optional[Any]:
         if cls.model is None:
             raise NotImplementedError("Model must be set for BaseService subclass")
         async with async_session_maker() as session:
