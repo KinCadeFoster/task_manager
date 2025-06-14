@@ -85,3 +85,7 @@ class SchemaUserUpdate(BaseModel):
         if v:
             return v.lower().capitalize()
         return v
+
+class SchemaUserPasswordUpdate(BaseModel):
+    old_password: str = Field(..., description="Текущий пароль пользователя")
+    new_password: str = Field(..., description="Новый пароль пользователя")

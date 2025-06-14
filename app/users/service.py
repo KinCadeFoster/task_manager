@@ -1,5 +1,6 @@
-from app.exceptions import UserAlreadyExistsException
+from app.exceptions import UserAlreadyExistsException, IncorrectUsernameOrPasswordException
 from app.service.base import BaseService
+from app.users.hashing import verify_password, get_password_hash
 from app.users.models import UsersTableModel
 
 
@@ -17,3 +18,13 @@ class UsersService(BaseService):
             existing_username = await cls.find_one_or_none(username=username)
             if existing_username and existing_username.id != user_id:
                 raise UserAlreadyExistsException(detail="Username already in use")
+
+    @classmethod
+    async def update_password(cls, user_id: int, old_password: str, new_password: str):
+        user = await cls.find_by_id(user_id)
+        if not user or not verify_password(old_password, user.hash_password):
+            raise IncorrectUsernameOrPasswordException(detail="Current password is incorrect")
+        new_hash = get_password_hash(new_password)
+        await UsersService.update_by_id(user_id, hash_password=new_hash)
+        updated_user = await cls.find_by_id(user_id)
+        return updated_user

@@ -2,9 +2,10 @@ from fastapi import APIRouter, status, Response, Depends, HTTPException
 
 from app.exceptions import UserAlreadyExistsException, IncorrectUsernameOrPasswordException, UserPermissionError
 from app.users.dependencies import get_current_user, get_current_admin_user, check_user_can_access_for_admin
+from app.users.hashing import get_password_hash
 from app.users.models import UsersTableModel
-from app.users.schemas import SchemaUserRegister, SchemaUserAuth, SchemaUser, SchemaUserUpdate
-from app.users.auth import get_password_hash, authenticate_user, create_access_token
+from app.users.schemas import SchemaUserRegister, SchemaUserAuth, SchemaUser, SchemaUserUpdate, SchemaUserPasswordUpdate
+from app.users.auth import authenticate_user, create_access_token
 from app.users.service import UsersService
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
@@ -68,3 +69,28 @@ async def read_user_all(current_user: SchemaUser = Depends(get_current_admin_use
     if not current_user.is_admin:
         raise HTTPException(status_code=403, detail="You don't have enough rights")
     return await UsersService.find_all()
+
+@router.post("/change-password", response_model=SchemaUser)
+async def change_password(
+    data: SchemaUserPasswordUpdate,
+    current_user: UsersTableModel = Depends(get_current_user),
+):
+    user = await UsersService.update_password(
+        user_id=current_user.id,
+        old_password=data.old_password,
+        new_password=data.new_password
+    )
+    return user
+
+@router.post("/admin-change-password/{user_id}", response_model=SchemaUser)
+async def admin_change_password(
+    user_id: int,
+    new_password: str,
+    current_user: UsersTableModel = Depends(get_current_admin_user),
+):
+    user = await UsersService.find_by_id(user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    new_hash = get_password_hash(new_password)
+    updated_user = await UsersService.update_by_id(user_id, hash_password=new_hash)
+    return updated_user

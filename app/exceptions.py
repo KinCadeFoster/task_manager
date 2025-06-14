@@ -38,3 +38,7 @@ UserPermissionError = HTTPException(
 class UserAlreadyExistsException(HTTPException):
     def __init__(self, detail: str = "User already exists"):
         super().__init__(status_code=400, detail=detail)
+
+class IncorrectUsernameOrPasswordException(HTTPException):
+    def __init__(self, detail: str = "Incorrect username or password"):
+        super().__init__(status_code=401, detail=detail)
