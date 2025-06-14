@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import HTTPException, status
 
 UserAlreadyExistsException = HTTPException(
     status_code=status.HTTP_409_CONFLICT,
@@ -34,3 +34,7 @@ UserPermissionError = HTTPException(
     detail="Нет права доступа"
 
 )
+
+class UserAlreadyExistsException(HTTPException):
+    def __init__(self, detail: str = "User already exists"):
+        super().__init__(status_code=400, detail=detail)

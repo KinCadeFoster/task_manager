@@ -4,8 +4,6 @@ from jose import jwt, JWTError
 from app.config import settings
 from app.exceptions import UserPermissionError, UserIsNotPresentException, TokenExpiredException, \
     IncorrectTokenFormatException, TokenAbsentException
-from app.projects.service import ProjectService
-from app.tasks.service import TaskService
 from app.users.models import UsersTableModel
 from app.users.schemas import SchemaUser
 from app.users.service import UsersService
@@ -39,3 +37,15 @@ async def get_current_admin_user(current_user: SchemaUser = Depends(get_current_
     if current_user.is_admin:
         return current_user
     raise UserPermissionError
+
+
+async def check_user_can_access_for_admin(
+    user_id: int,
+    current_user: UsersTableModel
+):
+    if not current_user.is_admin:
+        raise HTTPException(status_code=403, detail="You do not have permission to perform this action")
+    user_obj = await UsersService.find_by_id(user_id)
+    if not user_obj:
+        raise HTTPException(status_code=404, detail="User not found")
+    return current_user
