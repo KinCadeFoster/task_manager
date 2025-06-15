@@ -32,7 +32,11 @@ UserIsNotPresentException = HTTPException(
 UserPermissionError = HTTPException(
     status_code=status.HTTP_403_FORBIDDEN,
     detail="Нет права доступа"
+)
 
+UserIsNotMemberProject = HTTPException(
+    status_code=status.HTTP_403_FORBIDDEN,
+    detail="User is not a member of the project"
 )
 
 class UserAlreadyExistsException(HTTPException):
