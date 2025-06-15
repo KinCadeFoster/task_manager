@@ -5,7 +5,7 @@ from app.projects.service import ProjectService
 from app.exceptions import UserPermissionError
 from app.users.models import UsersTableModel
 
-async def check_user_can_access_task_for_manager_or_user(
+async def check_access_for_comments(
     task_id: int,
     current_user: UsersTableModel = Depends(get_current_user)
 ):

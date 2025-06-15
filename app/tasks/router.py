@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status, Depends
 
-from app.comments.dependencies import check_user_can_access_task_for_manager_or_user
+from app.comments.dependencies import check_access_for_comments
 from app.projects.service import ProjectService
 from app.tasks.dependencies import check_user_can_access_task_for_manager_or_user_tasks
 from app.tasks.schemas import SchemaTask, SchemaTaskAdd, SchemaTaskUpdate
@@ -16,7 +16,7 @@ async def get_all_tasks() -> list[SchemaTask]:
 
 @router.get("/{task_id}", response_model=SchemaTask)
 async def get_task_by_id(task_id:int, current_user: UsersTableModel = Depends(get_current_user)):
-    await check_user_can_access_task_for_manager_or_user(task_id, current_user)
+    await check_access_for_comments(task_id, current_user)
     task = await TaskService.find_by_id(task_id)
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
@@ -36,7 +36,7 @@ async def add_task(new_task: SchemaTaskAdd, current_user: UsersTableModel = Depe
 
 @router.patch("/{task_id}", response_model=SchemaTask)
 async def update_task(task_id: int, data: SchemaTaskUpdate, current_user: UsersTableModel = Depends(get_current_user)):
-    await check_user_can_access_task_for_manager_or_user(task_id, current_user)
+    await check_access_for_comments(task_id, current_user)
     task = await TaskService.update_by_id(task_id, **data.model_dump())
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
@@ -44,7 +44,7 @@ async def update_task(task_id: int, data: SchemaTaskUpdate, current_user: UsersT
 
 @router.delete("/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_task(task_id: int, current_user: UsersTableModel = Depends(get_current_user)):
-    await check_user_can_access_task_for_manager_or_user(task_id, current_user)
+    await check_access_for_comments(task_id, current_user)
     task = await TaskService.find_by_id(task_id)
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
