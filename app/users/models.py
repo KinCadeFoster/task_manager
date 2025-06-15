@@ -1,7 +1,9 @@
 from sqlalchemy import String, DateTime, func, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from app.database import Base
 from app.projects.association_tables import project_users
+
 
 class UsersTableModel(Base):
     __tablename__ = "users"

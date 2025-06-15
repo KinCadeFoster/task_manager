@@ -8,7 +8,7 @@ class SchemaUserRegister(BaseModel):
     password: str = Field(..., description="Пароль пользователя")
     name: str = Field(..., description="Имя пользователя")
     surname: str = Field(..., description="Фамилия пользователя")
-    patronymic: str = Field(..., description="Отчество пользователя") # None по умолчанию, если не обязательно
+    patronymic: str = Field(..., description="Отчество пользователя")  # None по умолчанию, если не обязательно
     username: str = Field(..., description="Аккаунт пользователя")
     is_admin: bool = Field(default=False, description="Права админа")
     is_manager: bool = Field(default=False, description="Права менеджера")
@@ -49,6 +49,7 @@ class SchemaUser(BaseModel):
     class Config:
         from_attributes = True
 
+
 class SchemaUserAuth(BaseModel):
     username: str = Field(..., description="Аккаунт пользователя")
     password: str = Field(..., description="Пароль пользователя")
@@ -63,7 +64,7 @@ class SchemaUserUpdate(BaseModel):
     email: EmailStr = Field(..., description="email пользователя")
     name: str = Field(..., description="Имя пользователя")
     surname: str = Field(..., description="Фамилия пользователя")
-    patronymic: str = Field(..., description="Отчество пользователя") # None по умолчанию, если не обязательно
+    patronymic: str = Field(..., description="Отчество пользователя")  # None по умолчанию, если не обязательно
     username: str = Field(..., description="Аккаунт пользователя")
     is_admin: bool = Field(default=False, description="Права админа")
     is_manager: bool = Field(default=False, description="Права менеджера")
@@ -85,6 +86,7 @@ class SchemaUserUpdate(BaseModel):
         if v:
             return v.lower().capitalize()
         return v
+
 
 class SchemaUserPasswordUpdate(BaseModel):
     old_password: str = Field(..., description="Текущий пароль пользователя")

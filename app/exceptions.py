@@ -31,7 +31,7 @@ UserIsNotPresentException = HTTPException(
 
 UserPermissionError = HTTPException(
     status_code=status.HTTP_403_FORBIDDEN,
-    detail="Нет права доступа"
+    detail="You do not have permission to perform this action"
 )
 
 UserIsNotMemberProject = HTTPException(
