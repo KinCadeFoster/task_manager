@@ -17,10 +17,10 @@ class CommentService(BaseService):
     @classmethod
     async def update_comment(cls, comment_id: int, data: SchemaCommentUpdate, current_user: UsersTableModel):
         comment = await CommentService.find_by_id(comment_id)
-        if comment.creator_id != current_user.id:
-            raise CommentNoPermission
         if not comment:
             raise CommentNotFound
+        if comment.creator_id != current_user.id:
+            raise CommentNoPermission
         await check_access_for_comments(comment.task_id, current_user)
         updated_comment = await CommentService.update_by_id(comment_id, **data.model_dump(exclude_unset=True))
         if not updated_comment:
@@ -33,6 +33,8 @@ class CommentService(BaseService):
         comment = await CommentService.find_by_id(comment_id)
         if not comment:
             raise CommentNotFound
+        if comment.creator_id != current_user.id:
+            raise CommentNoPermission
         await check_access_for_comments(comment.task_id, current_user)
         result = await CommentService.delete_by_id(comment_id)
         if not result:
