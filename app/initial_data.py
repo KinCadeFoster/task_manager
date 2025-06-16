@@ -1,5 +1,6 @@
 from app.database import check_db_exists, Base, engine
-from app.users.auth import get_password_hash
+from app.users.hashing import get_password_hash
+
 from app.users.service import UsersService
 
 async def init_db():

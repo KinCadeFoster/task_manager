@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import HTTPException, status
 
 UserAlreadyExistsException = HTTPException(
     status_code=status.HTTP_409_CONFLICT,
@@ -31,6 +31,18 @@ UserIsNotPresentException = HTTPException(
 
 UserPermissionError = HTTPException(
     status_code=status.HTTP_403_FORBIDDEN,
-    detail="Нет права доступа"
-
+    detail="You do not have permission to perform this action"
 )
+
+UserIsNotMemberProject = HTTPException(
+    status_code=status.HTTP_403_FORBIDDEN,
+    detail="User is not a member of the project"
+)
+
+class UserAlreadyExistsException(HTTPException):
+    def __init__(self, detail: str = "User already exists"):
+        super().__init__(status_code=400, detail=detail)
+
+class IncorrectUsernameOrPasswordException(HTTPException):
+    def __init__(self, detail: str = "Incorrect username or password"):
+        super().__init__(status_code=401, detail=detail)

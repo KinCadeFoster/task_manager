@@ -1,12 +1,11 @@
 from datetime import datetime, UTC
-from fastapi import Request, Depends, HTTPException
+
+from fastapi import Request, Depends
 from jose import jwt, JWTError
+
 from app.config import settings
 from app.exceptions import UserPermissionError, UserIsNotPresentException, TokenExpiredException, \
     IncorrectTokenFormatException, TokenAbsentException
-from app.projects.service import ProjectService
-from app.tasks.service import TaskService
-from app.users.models import UsersTableModel
 from app.users.schemas import SchemaUser
 from app.users.service import UsersService
 
@@ -16,6 +15,7 @@ def get_token(request: Request):
     if not token:
         raise TokenAbsentException
     return token
+
 
 async def get_current_user(token: str = Depends(get_token)):
     try:
@@ -34,6 +34,7 @@ async def get_current_user(token: str = Depends(get_token)):
     if not user:
         raise UserIsNotPresentException
     return user
+
 
 async def get_current_admin_user(current_user: SchemaUser = Depends(get_current_user)):
     if current_user.is_admin:

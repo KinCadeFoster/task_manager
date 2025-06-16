@@ -1,10 +1,7 @@
 from typing import Any, Optional, Type
-
-from fastapi import HTTPException
 from sqlalchemy import select, insert, update
 from app.database import async_session_maker
-from app.projects.models import ProjectTableModel
-from app.users.models import UsersTableModel
+
 
 
 class BaseService:
