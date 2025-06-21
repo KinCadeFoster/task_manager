@@ -100,3 +100,14 @@ class ProjectService(BaseService):
             projects = result.unique().scalars().all()
 
             return [SchemaProject.model_validate(project) for project in projects]
+
+    @classmethod
+    async def find_by_id(cls, project_id: int) -> Optional[ProjectTableModel]:
+        async with async_session_maker() as session:
+            query = (
+                select(ProjectTableModel)
+                .where(ProjectTableModel.id == project_id)
+                .options(joinedload(ProjectTableModel.users))
+            )
+            result = await session.execute(query)
+            return result.unique().scalar_one_or_none()
