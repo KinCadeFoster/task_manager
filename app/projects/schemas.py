@@ -20,6 +20,7 @@ class SchemaProject(SchemaProjectAdd):
 class SchemaProjectUpdate(BaseModel):
     name: str = Field(..., description="Название проекта", examples=["My Project"])
     description: str = Field(..., description="Описание проекта", examples=["Проект для автоматизации задач"])
+    creator_id: int = Field(..., description="ID пользователя, создавшего проект", examples=[1])
 
 class SchemaProjectInactivate(BaseModel):
     is_active: bool = Field(default=True, description="Флаг активности проекта", examples=[True])
