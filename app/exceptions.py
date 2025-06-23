@@ -39,6 +39,11 @@ UserIsNotMemberProject = HTTPException(
     detail="User is not a member of the project"
 )
 
+UserIsNotActive = HTTPException(
+    status_code=status.HTTP_403_FORBIDDEN,
+    detail="User is not active"
+)
+
 class UserAlreadyExistsException(HTTPException):
     def __init__(self, detail: str = "User already exists"):
         super().__init__(status_code=400, detail=detail)

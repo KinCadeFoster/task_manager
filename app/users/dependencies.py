@@ -5,7 +5,7 @@ from jose import jwt, JWTError
 
 from app.config import settings
 from app.exceptions import UserPermissionError, UserIsNotPresentException, TokenExpiredException, \
-    IncorrectTokenFormatException, TokenAbsentException
+    IncorrectTokenFormatException, TokenAbsentException, UserIsNotActive
 from app.users.schemas import SchemaUser
 from app.users.service import UsersService
 
@@ -33,6 +33,8 @@ async def get_current_user(token: str = Depends(get_token)):
     user = await UsersService.find_by_id(int(user_id))
     if not user:
         raise UserIsNotPresentException
+    if not user.is_active:
+        raise UserIsNotActive
     return user
 
 
