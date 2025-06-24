@@ -71,7 +71,7 @@ class TaskService(BaseService):
         return await TaskService.find_all(project_id=project_id)
 
     @classmethod
-    async def get_tasks_by_prefix_and_id(cls, project_prefix: str, local_task_id: int, current_user: UsersTableModel):
+    async def get_task_by_prefix_and_id(cls, project_prefix: str, local_task_id: int, current_user: UsersTableModel):
         project_id = await ProjectService.get_id_by_prefix(project_prefix=project_prefix)
         task = await TaskService.find_one_or_none(local_task_id=local_task_id, project_id=project_id)
         if not task:
