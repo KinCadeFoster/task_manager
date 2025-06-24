@@ -29,7 +29,7 @@ async def get_tasks_by_project(project_id: int, current_user: UsersTableModel = 
     return await TaskService.get_tasks_by_project(project_id, current_user)
 
 @router.get("/{project_prefix}-{local_task_id}", response_model=SchemaTask)
-async def get_tasks_by_project(
+async def get_task_by_project(
         project_prefix: str,
         local_task_id: int,
         current_user: UsersTableModel = Depends(get_current_user)
