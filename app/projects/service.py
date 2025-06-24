@@ -79,3 +79,12 @@ class ProjectService(BaseService):
             if not project:
                 return False
             return any(user.id == user_id for user in project.users)
+
+    @classmethod
+    async def get_id_by_prefix(cls, project_prefix:str) -> int:
+        if cls.model is None:
+            raise NotImplementedError("Model must be set for BaseService subclass")
+        project = await ProjectService.find_one_or_none(prefix_name=project_prefix)
+        if project is None:
+            raise ValueError(f"Project with prefix '{project_prefix}' not found")
+        return project.id
