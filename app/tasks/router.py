@@ -35,3 +35,10 @@ async def get_task_by_project(
         current_user: UsersTableModel = Depends(get_current_user)
 ):
     return await TaskService.get_task_by_prefix_and_id(project_prefix, local_task_id, current_user)
+
+@router.get("/{project_prefix}", response_model=list[SchemaTask])
+async def get_tasks_by_project(
+        project_prefix: str,
+        current_user: UsersTableModel = Depends(get_current_user)
+):
+    return await TaskService.get_tasks_by_prefix(project_prefix, current_user)

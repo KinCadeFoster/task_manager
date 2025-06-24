@@ -45,10 +45,10 @@ class TaskService(BaseService):
 
     @classmethod
     async def update_task(cls, task_id: int, data: SchemaTaskUpdate, current_user: UsersTableModel):
-        await check_access_for_tasks(task_id, current_user)
         task = await TaskService.update_by_id(task_id, **data.model_dump())
         if not task:
             raise TaskNotFound
+        await check_access_for_tasks(task.project_id, current_user)
         return task
 
     @classmethod
@@ -72,9 +72,18 @@ class TaskService(BaseService):
 
     @classmethod
     async def get_task_by_prefix_and_id(cls, project_prefix: str, local_task_id: int, current_user: UsersTableModel):
-        project_id = await ProjectService.get_id_by_prefix(project_prefix=project_prefix)
+        project_id = await ProjectService.get_project_id_by_prefix(project_prefix=project_prefix)
         task = await TaskService.find_one_or_none(local_task_id=local_task_id, project_id=project_id)
         if not task:
             raise TaskNotFound
-        await check_access_for_tasks(task.id, current_user)
+        await check_access_for_tasks(project_id, current_user)
         return task
+
+    @classmethod
+    async def get_tasks_by_prefix(cls, project_prefix: str, current_user: UsersTableModel):
+        project_id = await ProjectService.get_project_id_by_prefix(project_prefix=project_prefix)
+        tasks = await TaskService.get_tasks_by_project(project_id=project_id, current_user=current_user)
+        if not tasks:
+            raise TaskNotFound
+        await check_access_for_tasks(project_id, current_user)
+        return tasks
