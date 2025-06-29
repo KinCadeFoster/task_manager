@@ -66,6 +66,7 @@ class SchemaUserUpdate(BaseModel):
     surname: str = Field(..., description="Фамилия пользователя")
     patronymic: str = Field(..., description="Отчество пользователя")  # None по умолчанию, если не обязательно
     username: str = Field(..., description="Аккаунт пользователя")
+    is_active: bool = Field(..., description="Активен ли пользователь")
     is_admin: bool = Field(default=False, description="Права админа")
     is_manager: bool = Field(default=False, description="Права менеджера")
     is_user: bool = Field(default=True, description="Пользователь")
