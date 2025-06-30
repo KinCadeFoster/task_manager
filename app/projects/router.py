@@ -16,44 +16,36 @@ router = APIRouter(
     tags=["Projects"]
 )
 
-@router.get("/")
-async def get_all_project(
-        current_user: UsersTableModel = Depends(get_current_user)
-)-> list[SchemaProject]:
+@router.get("/", response_model=list[SchemaProject])
+async def get_all_project(current_user: UsersTableModel = Depends(get_current_user)):
     if current_user.is_admin:
         return await ProjectService.find_all()
     return await ProjectService.find_by_user_id(current_user.id)
 
 
-@router.get("/{project_id}")
-async def get_project_by_id(
-        project_id: int,
-        current_user: UsersTableModel = Depends(get_current_user)
-) -> SchemaProject:
+@router.get("/{project_id}", response_model=SchemaProject)
+async def get_project_by_id(project_id: int, current_user: UsersTableModel = Depends(get_current_user)):
     project = await ProjectService.find_by_id(project_id)
     if current_user.is_admin or project.creator_id == current_user.id or any(u.id == current_user.id for u in project.users):
         return SchemaProject.model_validate(project)
     raise UserPermissionError
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED)
-async def add_project(
-        new_project: SchemaProjectAdd,
-        current_user: UsersTableModel = Depends(get_current_user)
-) -> SchemaProject:
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=SchemaProject)
+async def add_project(new_project: SchemaProjectAdd, current_user: UsersTableModel = Depends(get_current_user)):
     if current_user.is_manager:
         current_project = await ProjectService.add(**new_project.model_dump(), creator_id=current_user.id)
-        await add_user_to_project(current_project.id, current_user.id)
+        await ProjectService.add_user_to_project(current_project.id, current_user.id, current_user)
         return current_project
     raise UserPermissionError
 
 
-@router.patch("/{project_id}")
+@router.patch("/{project_id}", response_model=SchemaProject)
 async def update_project(
         project_id: int,
         data: SchemaProjectUpdate,
         current_user: UsersTableModel = Depends(get_current_user)
-) -> SchemaProject:
+):
     project = await ProjectService.find_by_id(project_id)
     if current_user.is_manager and project.creator_id == current_user.id:
         if project.creator_id != data.creator_id:
@@ -62,16 +54,13 @@ async def update_project(
                 raise NewCreatorNotFound
             if not new_creator.is_manager:
                 raise NewCreatorMustBeManager
-            await add_user_to_project(project.id, data.creator_id)
+            await ProjectService.add_user_to_project(project_id, data.creator_id, current_user)
         return await ProjectService.update_by_id(project_id, **data.model_dump())
     raise UserPermissionError
 
 
-@router.patch("/inactivate/{project_id}")
-async def inactivate_project(
-        project_id: int,
-        current_user: UsersTableModel = Depends(get_current_user)
-) -> SchemaProject:
+@router.patch("/inactivate/{project_id}", response_model=SchemaProject)
+async def inactivate_project(project_id: int, current_user: UsersTableModel = Depends(get_current_user)):
     project = await ProjectService.find_by_id(project_id)
     if not (current_user.is_manager and project.creator_id == current_user.id):
         raise UserPermissionError
@@ -81,10 +70,7 @@ async def inactivate_project(
 
 
 @router.delete("/{project_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_project(
-        project_id: int,
-        current_user: UsersTableModel = Depends(get_current_user)
-):
+async def delete_project(project_id: int, current_user: UsersTableModel = Depends(get_current_user)):
     project = await ProjectService.find_by_id(project_id)
     if not current_user.is_admin:
         raise UserPermissionError
@@ -94,11 +80,8 @@ async def delete_project(
     return None
 
 
-@router.get("/{project_id}/users")
-async def get_project_users(
-        project_id: int,
-        current_user: UsersTableModel = Depends(get_current_user)
-) -> list[SchemaUser]:
+@router.get("/{project_id}/users", response_model=list[SchemaUser])
+async def get_project_users(project_id: int, current_user: UsersTableModel = Depends(get_current_user)):
     project = await ProjectService.find_by_id(project_id)
     if not any(u.id == current_user.id for u in project.users):
         raise UserPermissionError

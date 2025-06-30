@@ -79,7 +79,7 @@ class ProjectService(BaseService):
             user = await session.get(UsersTableModel, user_id)
             if not user:
                 raise UserNotFound
-            if user not in project.users:
+            if not any(u.id == user.id for u in project.users):
                 raise UserNotInProject
             project.users.remove(user)
             session.add(project)
