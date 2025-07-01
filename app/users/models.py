@@ -34,3 +34,6 @@ class UsersTableModel(Base):
     )
 
     projects = relationship("ProjectTableModel", secondary=project_users, back_populates="users")
+
+    def __str__(self):
+        return f"User: {self.username}, ID: {self.id}"

@@ -36,3 +36,6 @@ class CommentTableModel(Base):
         onupdate=func.now(),
         comment="Дата и время последнего обновления комментария"
     )
+
+    def __str__(self):
+        return f"Comment ID: {self.id}"

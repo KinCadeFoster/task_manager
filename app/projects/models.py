@@ -29,3 +29,6 @@ class ProjectTableModel(Base):
 
     users = relationship("UsersTableModel", secondary=project_users, back_populates="projects")
     tasks = relationship("TaskTableModel", back_populates="project", cascade="all, delete-orphan")
+
+    def __str__(self):
+        return f"Project: {self.name}, ID: {self.id}"
