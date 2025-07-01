@@ -188,3 +188,23 @@ class ProjectService(BaseService):
         ):
             raise UserPermissionError
         return [SchemaUser.model_validate(user) for user in project.users]
+
+    @classmethod
+    async def get_last_task_id(cls, project_id: int) -> int:
+        """
+        Получить текущий last_task_id для проекта.
+        """
+        project = await cls.find_by_id(project_id)
+        return project.last_task_id
+
+    @classmethod
+    async def increment_last_task_id(cls, project_id: int) -> int:
+        """
+        Инкрементировать last_task_id для проекта и вернуть новое значение.
+        """
+        async with async_session_maker() as session:
+            project = await cls.find_by_id(project_id, session)
+            project.last_task_id += 1
+            session.add(project)
+            await session.commit()
+            return project.last_task_id
