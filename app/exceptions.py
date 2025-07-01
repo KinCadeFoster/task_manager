@@ -51,3 +51,7 @@ class UserAlreadyExistsException(HTTPException):
 class IncorrectUsernameOrPasswordException(HTTPException):
     def __init__(self, detail: str = "Incorrect username or password"):
         super().__init__(status_code=401, detail=detail)
+
+class IncorrectTokenFormatException(Exception):
+    """Некорректный формат токена."""
+    pass

@@ -40,3 +40,6 @@ class TaskTableModel(Base):
     local_task_id: Mapped[int] = mapped_column(Integer, nullable=False, comment="Номер задачи в проекте")
 
     project = relationship("ProjectTableModel", back_populates="tasks")
+
+    def __str__(self):
+        return f"Task: {self.name}, ID: {self.id}, Local ID: {self.local_task_id}"
