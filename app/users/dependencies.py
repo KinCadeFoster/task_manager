@@ -1,6 +1,6 @@
 from datetime import datetime, UTC
 
-from fastapi import Request, Depends
+from fastapi import Request, Depends, HTTPException, status
 from jose import jwt, JWTError
 
 from app.config import settings
@@ -23,10 +23,20 @@ async def get_current_user(token: str = Depends(get_token)):
             token, settings.SECRET_KEY, settings.ALGORITHM
         )
     except JWTError:
-        raise IncorrectTokenFormatException
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
     expire: str = payload.get("exp")
     if (not expire) or (int(expire) < datetime.now(UTC).timestamp()):
-        raise TokenExpiredException
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token has expired",
+            headers={"WWW-Authenticate": "Bearer"},
+            )
+
     user_id: str = payload.get("sub")
     if not user_id:
         raise UserIsNotPresentException

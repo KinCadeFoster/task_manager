@@ -1,5 +1,6 @@
 from datetime import datetime
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
+
 
 class SchemaCommentAdd(BaseModel):
     """Схема для добавления комментария"""
@@ -14,8 +15,7 @@ class SchemaComment(SchemaCommentAdd):
     updated_at: datetime = Field(..., description="Дата и время последнего обновления комментария")
     is_deleted: bool = Field(False, description="Удален ли комментарий")
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class SchemaCommentUpdate(BaseModel):
     """Схема для обновления текста комментария"""

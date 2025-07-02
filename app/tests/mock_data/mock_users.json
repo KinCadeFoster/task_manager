@@ -1,0 +1,24 @@
+[
+  {
+    "email": "admin@admin.ru",
+    "name": "admin",
+    "surname": "admin",
+    "patronymic": "admin",
+    "username": "admin",
+    "hash_password": "$2b$12$bO6.wZ8L1ZqOxsdnAgjcmeNrcEgBExszE36eV8VP/S1kdBXQ1An5S",
+    "is_admin": true,
+    "is_manager": false,
+    "is_user": false
+  },
+  {
+  "email": "user@example.com",
+  "name": "String",
+  "surname": "String",
+  "patronymic": "String",
+  "username": "string",
+  "hash_password": "$2b$12$RTEVvN8lN5MKm8y67TiyZOUYyx0n2DN.GcDIHA0ReAPl2emqCbWS2",
+  "is_admin": false,
+  "is_manager": true,
+  "is_user": true
+}
+]

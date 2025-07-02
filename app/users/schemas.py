@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, EmailStr, Field, field_validator
+from pydantic import BaseModel, EmailStr, Field, field_validator, ConfigDict
 
 
 class SchemaUserRegister(BaseModel):
@@ -46,8 +46,7 @@ class SchemaUser(BaseModel):
     is_manager: bool = Field(default=False, description="Права менеджера")
     is_user: bool = Field(default=True, description="Пользователь")
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class SchemaUserAuth(BaseModel):

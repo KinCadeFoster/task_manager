@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Баг отображения 1",
+    "description": "Баг отображения 1",
+    "project_id": 1,
+    "creator_id": 2,
+    "assignee_id": 2,
+    "priority": 1,
+    "status": 1,
+    "local_task_id": 1
+  },
+  {
+    "name": "Баг ото21212ражения",
+    "description": "21221ng",
+    "project_id": 1,
+    "creator_id": 2,
+    "assignee_id": 2,
+    "priority": 2,
+    "status": 1,
+    "local_task_id": 2
+  },
+  {
+    "name": "Баг отображения",
+    "description": "string",
+    "project_id": 2,
+    "creator_id": 1,
+    "assignee_id": 2,
+    "priority": 1,
+    "status": 1,
+    "local_task_id": 1
+  }
+]

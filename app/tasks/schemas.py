@@ -1,5 +1,6 @@
 from datetime import datetime
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
+
 
 class SchemaTaskAdd(BaseModel):
     name: str = Field(..., description="Название задачи", examples=["Баг отображения"])
@@ -17,8 +18,7 @@ class SchemaTask(SchemaTaskAdd):
     status: int = Field(..., description="Статус", examples=[1])
     local_task_id: int = Field(..., description="Локальный номер задачи", examples=[1])
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class SchemaTaskUpdate(BaseModel):
     name: str = Field(..., description="Название задачи", examples=["Баг отображения"])

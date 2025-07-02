@@ -1,5 +1,6 @@
 from datetime import datetime
-from pydantic import BaseModel, Field, constr
+from pydantic import BaseModel, Field, constr, ConfigDict
+
 
 class SchemaProjectAdd(BaseModel):
     name: str = Field(..., description="Название проекта", examples=["My Project"])
@@ -14,8 +15,7 @@ class SchemaProject(SchemaProjectAdd):
     updated_at: datetime = Field(..., description="Дата последнего обновления", examples=["2025-05-08T17:19:33.900200"])
     is_active: bool = Field(default=True, description="Флаг активности проекта", examples=[True])
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class SchemaProjectUpdate(BaseModel):
     name: str = Field(..., description="Название проекта", examples=["My Project"])
