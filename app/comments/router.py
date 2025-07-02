@@ -37,4 +37,4 @@ async def get_comments_by_task(
         task_id: int,
         current_user: UsersTableModel = Depends(get_current_user)
 ):
-    return await CommentService.get_comments_by_task(task_id=task_id, current_user=current_user)
+    return await CommentService.get_comments_by_task_id(task_id=task_id, current_user=current_user)

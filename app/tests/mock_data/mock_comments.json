@@ -1,17 +1,17 @@
 [
   {
     "creator_id": 2,
-    "comment_text": "string",
+    "comment_text": "string1",
     "task_id": 1
   },
   {
     "creator_id": 2,
-    "comment_text": "string",
+    "comment_text": "string2",
     "task_id": 1
   },
   {
-    "creator_id": 2,
-    "comment_text": "string",
+    "creator_id": 3,
+    "comment_text": "string1",
     "task_id": 2
   }
 ]

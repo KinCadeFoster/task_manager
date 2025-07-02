@@ -42,6 +42,6 @@ class CommentService(BaseService):
         return None
 
     @classmethod
-    async def get_comments_by_task(cls, task_id: int, current_user: UsersTableModel):
+    async def get_comments_by_task_id(cls, task_id: int, current_user: UsersTableModel):
         await check_access_for_comments(task_id, current_user)
         return await CommentService.find_all(task_id=task_id)

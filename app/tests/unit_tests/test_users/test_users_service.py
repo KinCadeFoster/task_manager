@@ -4,7 +4,7 @@ from app.users.service import UsersService
 
 @pytest.mark.parametrize("user_id, email, surname, patronymic, username, is_admin, is_manager, is_user",[
     (1, "admin@admin.ru", "admin", "admin", "admin", True, False, False),
-    (2, "user@example.com", "String", "String" , "string", False, True, True)
+    (2, "manager@example.com", "String", "String" , "string", False, True, False)
 ])
 
 async def test_find_user_by_id(user_id, email, surname, patronymic, username, is_admin, is_manager, is_user):

@@ -11,11 +11,22 @@
     "is_user": false
   },
   {
-  "email": "user@example.com",
+  "email": "manager@example.com",
   "name": "String",
   "surname": "String",
   "patronymic": "String",
   "username": "string",
+  "hash_password": "$2b$12$RTEVvN8lN5MKm8y67TiyZOUYyx0n2DN.GcDIHA0ReAPl2emqCbWS2",
+  "is_admin": false,
+  "is_manager": true,
+  "is_user": false
+},
+  {
+  "email": "user@example.com",
+  "name": "User",
+  "surname": "User",
+  "patronymic": "User",
+  "username": "User",
   "hash_password": "$2b$12$RTEVvN8lN5MKm8y67TiyZOUYyx0n2DN.GcDIHA0ReAPl2emqCbWS2",
   "is_admin": false,
   "is_manager": true,
