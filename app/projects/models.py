@@ -25,7 +25,7 @@ class ProjectTableModel(Base):
         comment="Дата и время последнего обновления проекта"
     )
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, comment="Статус активности проекта")
-    last_task_id: Mapped[int] = mapped_column(Integer, nullable=False, default=0, comment="ID последней задачи проекта")
+    last_task_id: Mapped[int] = mapped_column(Integer, nullable=False, default=1, comment="ID последней задачи проекта")
 
     users = relationship("UsersTableModel", secondary=project_users, back_populates="projects")
     tasks = relationship("TaskTableModel", back_populates="project", cascade="all, delete-orphan")
