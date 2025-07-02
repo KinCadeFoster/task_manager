@@ -41,7 +41,10 @@ class TaskService(BaseService):
         if not project:
             raise ProjectNotFound
         new_task_dict = new_task.model_dump()
-        return await TaskService.add(**new_task_dict, creator_id=current_user.id, status=1, local_task_id=1)
+        local_task_id = await ProjectService.get_last_task_id(project.id)
+        new_task = await TaskService.add(**new_task_dict, creator_id=current_user.id, status=1, local_task_id=local_task_id)
+        await ProjectService.increment_last_task_id(project_id=project.id)
+        return new_task
 
     @classmethod
     async def update_task(cls, task_id: int, data: SchemaTaskUpdate, current_user: UsersTableModel):
@@ -53,10 +56,10 @@ class TaskService(BaseService):
 
     @classmethod
     async def delete_task(cls, task_id: int, current_user: UsersTableModel):
-        await check_access_for_tasks(task_id, current_user)
         task = await TaskService.find_by_id(task_id)
         if not task:
             raise TaskNotFound
+        await check_access_for_tasks(task.project_id, current_user)
         result = await TaskService.delete_by_id(task_id)
         if not result:
             raise TaskNotFound
