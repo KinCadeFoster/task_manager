@@ -16,20 +16,20 @@
   "surname": "String",
   "patronymic": "String",
   "username": "string",
-  "hash_password": "$2b$12$RTEVvN8lN5MKm8y67TiyZOUYyx0n2DN.GcDIHA0ReAPl2emqCbWS2",
+  "hash_password": "$2b$12$DmX8fifrqm4f7/s39uaO0OuISWz6P5jFIurvr9RSSM2yf84laaI2q",
   "is_admin": false,
   "is_manager": true,
   "is_user": false
 },
   {
-  "email": "user@example.com",
+  "email": "user2@example.com",
   "name": "User",
   "surname": "User",
   "patronymic": "User",
-  "username": "User",
-  "hash_password": "$2b$12$RTEVvN8lN5MKm8y67TiyZOUYyx0n2DN.GcDIHA0ReAPl2emqCbWS2",
+  "username": "user",
+  "hash_password": "$2b$12$TnczEVBRqB8gkJZCBhHsy.auKaN/b0CXcpfTlUbrVfhLFgd0qDzna",
   "is_admin": false,
-  "is_manager": true,
+  "is_manager": false,
   "is_user": true
 }
 ]

@@ -36,7 +36,7 @@ class ProjectService(BaseService):
         return project
 
     @classmethod
-    async def find_by_id(cls, project_id: int, db_session=None) -> ProjectTableModel:
+    async def find_project_by_id(cls, project_id: int, db_session=None) -> ProjectTableModel:
         """
         Получить проект по id.
         Если db_session не передан — создаём и управляем собственной сессией.
@@ -56,7 +56,7 @@ class ProjectService(BaseService):
     @classmethod
     async def add_user_to_project(cls, project_id: int, user_id: int, current_user: UsersTableModel):
         async with async_session_maker() as session:
-            project = await cls.find_by_id(project_id, session)
+            project = await cls.find_project_by_id(project_id, session)
             if not (current_user.is_manager and project.creator_id == current_user.id):
                 raise UserPermissionError
             user = await session.get(UsersTableModel, user_id)
@@ -72,7 +72,7 @@ class ProjectService(BaseService):
     @classmethod
     async def remove_user_from_project(cls, project_id: int, user_id: int, current_user: UsersTableModel):
         async with async_session_maker() as session:
-            project = await cls.find_by_id(project_id, session)
+            project = await cls.find_project_by_id(project_id, session)
             if not (current_user.is_manager and project.creator_id == current_user.id):
                 raise UserPermissionError
             if user_id == project.creator_id:
@@ -92,7 +92,7 @@ class ProjectService(BaseService):
         if cls.model is None:
             raise NotImplementedError("Model must be set for BaseService subclass")
         try:
-            project = await cls.find_by_id(project_id)
+            project = await cls.find_project_by_id(project_id)
         except ProjectNotFound:
             return False
         return any(user.id == user_id for user in project.users)
@@ -122,7 +122,7 @@ class ProjectService(BaseService):
 
     @classmethod
     async def get_project_by_id(cls, project_id: int, current_user: UsersTableModel):
-        project = await cls.find_by_id(project_id)
+        project = await cls.find_project_by_id(project_id)
         if (
             current_user.is_admin
             or project.creator_id == current_user.id
@@ -146,7 +146,7 @@ class ProjectService(BaseService):
             data: SchemaProjectUpdate,
             current_user: UsersTableModel
     ):
-        project = await cls.find_by_id(project_id)
+        project = await cls.find_project_by_id(project_id)
         if current_user.is_manager and project.creator_id == current_user.id:
             if project.creator_id != data.creator_id:
                 new_creator = await UsersService.find_by_id(data.creator_id)
@@ -161,7 +161,7 @@ class ProjectService(BaseService):
 
     @classmethod
     async def inactivate_project(cls, project_id: int, current_user: UsersTableModel):
-        project = await cls.find_by_id(project_id)
+        project = await cls.find_project_by_id(project_id)
         if not (current_user.is_manager and project.creator_id == current_user.id):
             raise UserPermissionError
         if not project.is_active:
@@ -170,7 +170,7 @@ class ProjectService(BaseService):
 
     @classmethod
     async def delete_project(cls, project_id: int, current_user: UsersTableModel):
-        project = await cls.find_by_id(project_id)
+        project = await cls.find_project_by_id(project_id)
         if not current_user.is_admin:
             raise UserPermissionError
         if project.is_active:
@@ -180,7 +180,7 @@ class ProjectService(BaseService):
 
     @classmethod
     async def get_project_users(cls, project_id: int, current_user: UsersTableModel):
-        project = await cls.find_by_id(project_id)
+        project = await cls.find_project_by_id(project_id)
         if not (
             current_user.is_admin
             or project.creator_id == current_user.id
@@ -194,7 +194,7 @@ class ProjectService(BaseService):
         """
         Получить текущий last_task_id для проекта.
         """
-        project = await cls.find_by_id(project_id)
+        project = await cls.find_project_by_id(project_id)
         return project.last_task_id
 
     @classmethod
@@ -203,7 +203,7 @@ class ProjectService(BaseService):
         Инкрементировать last_task_id для проекта и вернуть новое значение.
         """
         async with async_session_maker() as session:
-            project = await cls.find_by_id(project_id, session)
+            project = await cls.find_project_by_id(project_id, session)
             project.last_task_id += 1
             session.add(project)
             await session.commit()

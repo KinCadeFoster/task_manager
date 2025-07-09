@@ -85,10 +85,11 @@ async def authenticated_manager():
 @pytest.fixture(scope="session")
 async def authenticated_user():
     async with AsyncClient(app=fastapi_app, base_url="http://test") as ac:
-        await ac.post("/auth/login", json={
+        response = await ac.post("/auth/login", json={
             "username": "user",
-            "password": "string"
+            "password": "user"
         })
-        assert ac.cookies["task_manager_access_token"]
+        assert response.status_code == 200, f"Login failed: {response.status_code} {response.text}"
+        assert "task_manager_access_token" in ac.cookies, f"Cookies: {ac.cookies} Response: {response.text}"
         yield ac
 

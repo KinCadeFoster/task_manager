@@ -37,7 +37,7 @@ class TaskService(BaseService):
     @classmethod
     async def add_task(cls, new_task: SchemaTaskAdd, current_user: UsersTableModel):
         await check_access_for_tasks(new_task.project_id, current_user)
-        project = await ProjectService.find_by_id(new_task.project_id)
+        project = await ProjectService.find_project_by_id(new_task.project_id)
         if not project:
             raise ProjectNotFound
         new_task_dict = new_task.model_dump()
@@ -68,7 +68,7 @@ class TaskService(BaseService):
     @classmethod
     async def get_tasks_by_project(cls, project_id: int, current_user: UsersTableModel):
         await check_access_for_tasks(project_id, current_user)
-        project = await ProjectService.find_by_id(project_id)
+        project = await ProjectService.find_project_by_id(project_id)
         if not project:
             raise ProjectNotFound
         return await TaskService.find_all(project_id=project_id)
