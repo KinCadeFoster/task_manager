@@ -10,7 +10,7 @@
     "local_task_id": 1
   },
   {
-    "name": "Баг ото21212ражения",
+    "name": "Баг отображения 2",
     "description": "21221ng",
     "project_id": 1,
     "creator_id": 2,
@@ -20,7 +20,7 @@
     "local_task_id": 2
   },
   {
-    "name": "Баг отображения",
+    "name": "Баг отображения 3",
     "description": "string",
     "project_id": 2,
     "creator_id": 1,
