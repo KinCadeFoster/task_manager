@@ -6,27 +6,24 @@ test:
   stage: test
   image: python:3.12
   tags:
+    - docker
     - staging
-  before_script:
-    - pip install -r requirements.txt
   script:
+    - pip install -r requirements.txt
     - pytest
 
 deploy:
   stage: deploy
-  image: docker:24.0.2
-  services:
-    - docker:dind
-  variables:
-    DOCKER_HOST: tcp://docker:2375/
-    DOCKER_TLS_CERTDIR: ""
   tags:
+    - docker
     - staging
-  needs: [test]
   script:
+    - echo "📦 Сборка Docker-образа"
     - docker build -t taskmanager .
+    - echo "🛑 Остановка предыдущего контейнера (если есть)"
     - docker stop taskmanager || true
     - docker rm taskmanager || true
+    - echo "🚀 Запуск нового контейнера"
     - docker run -d --name taskmanager -p 8080:8080 taskmanager
   only:
     - main
