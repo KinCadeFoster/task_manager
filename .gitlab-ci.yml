@@ -1,18 +1,15 @@
 variables:
   MODE: "DEV"
-
   DB_HOST: "192.168.1.122"
   DB_PORT: "5432"
   DB_USER: "postgres"
   DB_PASS: "dbpass123"
   DB_NAME: "cadefostdb"
-
   TEST_DB_HOST: "192.168.1.122"
   TEST_DB_PORT: "5432"
   TEST_DB_USER: "postgres"
   TEST_DB_PASS: "dbpass123"
   TEST_DB_NAME: "test_task_manager_db"
-
   SECRET_KEY: "aBVIDGPivNDXOLWK/GfDs7BNq21+INkcXoKF08GdR44="
   ALGORITHM: "HS256"
 
@@ -27,22 +24,25 @@ test:
   tags:
     - docker
     - staging
-  before_script:
-    - apt-get update && apt-get install -y gcc libpq-dev
-    - pip install --upgrade pip
-    - pip install -r requirements.txt
   script:
+    - pip install -r requirements.txt
     - pytest
 
 deploy:
   stage: deploy
+  image: docker:latest
+  services:
+    - docker:dind
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_TLS_CERTDIR: ""
   tags:
     - docker
     - staging
   script:
     - echo "📦 Сборка Docker-образа"
     - docker build -t taskmanager .
-    - echo "🛑 Остановка предыдущего контейнера (если есть)"
+    - echo "🛑 Остановка предыдущего контейнера"
     - docker stop taskmanager || true
     - docker rm taskmanager || true
     - echo "🚀 Запуск нового контейнера"
