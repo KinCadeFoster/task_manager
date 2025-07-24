@@ -1,3 +1,5 @@
+from typing import AsyncGenerator
+
 from sqlalchemy import inspect, NullPool
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker, AsyncEngine
 from sqlalchemy.orm import DeclarativeBase
@@ -25,3 +27,8 @@ async def check_db_exists() -> bool:
             lambda sync_conn: inspect(sync_conn).get_table_names()
         )
         return bool(tables)
+
+
+async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
+    async with async_session_maker() as session:
+        yield session

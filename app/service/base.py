@@ -1,5 +1,9 @@
 from typing import Any, Optional, Type
+
+from fastapi import HTTPException, status
 from sqlalchemy import select, insert, update
+from sqlalchemy.exc import IntegrityError
+
 from app.database import async_session_maker
 
 
@@ -38,11 +42,23 @@ class BaseService:
     async def add(cls, **data) -> Any:
         if cls.model is None:
             raise NotImplementedError("Model must be set for BaseService subclass")
-        async with async_session_maker() as session:
-            query = insert(cls.model).values(**data).returning(cls.model)
-            result = await session.execute(query)
-            await session.commit()
-            return result.scalar_one()
+
+        try:
+            async with async_session_maker() as session:
+                query = insert(cls.model).values(**data).returning(cls.model)
+                result = await session.execute(query)
+                await session.commit()
+                return result.scalar_one()
+        except IntegrityError as e:
+            if "prefix_name" in str(e):
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Project with this prefix name already exists"
+                )
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Database integrity error"
+            )
 
     @classmethod
     async def update_by_id(cls, object_id: int, **data) -> Optional[Any]:

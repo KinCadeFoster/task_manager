@@ -12,7 +12,7 @@ router = APIRouter(
 )
 
 @router.get("/", response_model=list[SchemaProject])
-async def get_all_project(current_user: UsersTableModel = Depends(get_current_user)):
+async def get_all_projects(current_user: UsersTableModel = Depends(get_current_user)):
     return await ProjectService.get_all_project(current_user)
 
 @router.get("/{project_id}", response_model=SchemaProject)

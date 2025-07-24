@@ -52,12 +52,14 @@ async def test_delete_project():
 
 async def test_find_all_project():
     projects = await ProjectService.find_all()
-
     assert len(projects) == 2
+
 
 async def test_none_project():
     await ProjectService.delete_by_id(object_id=2)
     await ProjectService.delete_by_id(object_id=3)
+    await ProjectService.delete_by_id(object_id=4)
+    await ProjectService.delete_by_id(object_id=5)
     projects = await ProjectService.find_all()
 
 
