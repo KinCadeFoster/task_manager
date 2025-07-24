@@ -1,0 +1,32 @@
+stages:
+  - test
+  - deploy
+
+# Тестирование приложения
+test:
+  stage: test
+  image: python:3.12
+  before_script:
+    - pip install -r requirements.txt
+  script:
+    - pytest
+  tags:
+    - staging
+
+# Деплой только если тесты прошли
+deploy:
+  stage: deploy
+  tags:
+    - staging
+  script:
+    - echo "📦 Сборка Docker-образа"
+    - docker build -t taskmanager .
+
+    - echo "🛑 Остановка предыдущего контейнера (если есть)"
+    - docker stop taskmanager || true
+    - docker rm taskmanager || true
+
+    - echo "🚀 Запуск нового контейнера"
+    - docker run -d --name taskmanager -p 8080:8080 taskmanager
+  only:
+    - main
