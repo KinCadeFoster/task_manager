@@ -46,5 +46,7 @@ deploy:
     - docker rm taskmanager || true
     - echo "🚀 Запуск нового контейнера"
     - docker run -d --name taskmanager -p 8080:8080 taskmanager
+    - echo "ℹ️ Проверяем запущенные контейнеры"
+    - docker ps
   only:
     - main
