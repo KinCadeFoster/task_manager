@@ -19,25 +19,18 @@ stages:
 
 test:
   stage: test
-  image: python:3.12
   tags:
-    - docker
-    - staging
+    - shell  # Используем shell-runner
   script:
+    - echo "📦 Установка зависимостей"
     - pip install -r requirements.txt
+    - echo "🧪 Запуск тестов"
     - pytest
 
 deploy:
   stage: deploy
-  image: docker:latest
-  services:
-    - docker:dind
-  variables:
-    DOCKER_HOST: tcp://docker:2375/
-    DOCKER_TLS_CERTDIR: ""
   tags:
-    - docker
-    - staging
+    - shell  # Используем shell-runner
   script:
     - echo "📦 Сборка Docker-образа"
     - docker build -t taskmanager .
