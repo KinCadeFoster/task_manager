@@ -20,7 +20,8 @@ stages:
 test:
   stage: test
   tags:
-    - shell  # Используем shell-runner
+    - shell
+    - staging
   script:
     - echo "📦 Установка зависимостей"
     - pip install -r requirements.txt
@@ -30,7 +31,8 @@ test:
 deploy:
   stage: deploy
   tags:
-    - shell  # Используем shell-runner
+    - shell
+    - staging
   script:
     - echo "📦 Сборка Docker-образа"
     - docker build -t taskmanager .
@@ -39,7 +41,7 @@ deploy:
     - docker rm taskmanager || true
     - echo "🚀 Запуск нового контейнера"
     - docker run -d --name taskmanager -p 8080:8080 taskmanager
-    - echo "ℹ️ Проверяем запущенные контейнеры"
+    - echo "ℹ️ Проверка запущенных контейнеров"
     - docker ps
   only:
     - main
