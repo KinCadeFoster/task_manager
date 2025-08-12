@@ -21,7 +21,6 @@ async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
 
 app = FastAPI(lifespan=lifespan)
 
-
 app.include_router(router_tasks)
 app.include_router(router_projects)
 app.include_router(router_comments)
